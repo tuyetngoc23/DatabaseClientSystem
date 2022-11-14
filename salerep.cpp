@@ -10,7 +10,7 @@
 
 //SaleRep saleRep[100];
 vector<SaleRep> saleRep = {};
-
+//getline in file
 void explode(SaleRep& saler, const string& s, const char& c) {
     string buff{ "" };
     vector<string> v;
@@ -25,7 +25,7 @@ void explode(SaleRep& saler, const string& s, const char& c) {
     }
     if (buff != "")
         v.push_back(buff);
-
+    //stt =0 if have header tag
     if (v.size() == 5) {
         if (v[0] == "Stt") {
             saler.stt = 0;
@@ -40,6 +40,7 @@ void explode(SaleRep& saler, const string& s, const char& c) {
         saler.email = v[4];
     }
 }
+//read file
 void readFileSaler(string fileName) {
     string line;
     int i = 0;
@@ -49,11 +50,9 @@ void readFileSaler(string fileName) {
     {
         while (getline(myfile, line))
         {
-
-            /*cout << line << '\n';*/
             SaleRep s;
-            explode(s, line, ',');
-            saleRep.push_back(s);
+            explode(s, line, ','); // get 1 Saler
+            saleRep.push_back(s); // insert into vector salerep
             i++;
         }
         myfile.close();
@@ -64,8 +63,10 @@ void readFileSaler(string fileName) {
 void writeFileSaler(string fileName) {
     ofstream ptr;
     ptr.open(fileName);
+    //write header tag into file
     ptr << "Stt" << ',' << "Name"  << ',' << "Address" << ',' << "Phone" << ',' << "Email" << '\n';
     int i = 1;
+    //write file to vector salerep: start object 1
     while (i < saleRep.size()) {
         ptr << saleRep.at(i).stt << "," << saleRep.at(i).name << "," << saleRep.at(i).address << "," << saleRep.at(i).phone << ","
             << saleRep.at(i).email << '\n';
@@ -73,15 +74,19 @@ void writeFileSaler(string fileName) {
         i++;
     }
 }
+//list all Saler
 void listAllSaleRep() {
+    //init
     int index = 0;
     string short_address;
     double total{};
     for (int i = 1; i < saleRep.size(); i++) {
+        //break if tag
         if (saleRep[i].stt == 0) {
             break;
         }
         else {
+            //calculate total sales of saler
             vector<SaleHistory> sales = getListSaler(saleRep.at(i).stt);
             total = 0;
             if (sales.size() > 0) {                
@@ -91,6 +96,7 @@ void listAllSaleRep() {
                     }
                 }
             }
+            //get short address is string after '-'
             for (int j = saleRep[i].address.length() - 1; j >= 0; j--) {
                 if (saleRep[i].address[j] == '-') {
                     index = j;
@@ -100,6 +106,7 @@ void listAllSaleRep() {
                     index = 0;
                 }
             }
+            //check if don't have '-' -> long address = short address
             if (index != 0) {
                 short_address = saleRep[i].address.substr(index + 1);
             }
@@ -112,7 +119,9 @@ void listAllSaleRep() {
         }
     }
 }
+//view detail saler
 void viewDetailSaleRep(int i) {
+    //check saler exist
     if (saleRep.size() <= i || i == 0) {
         cout << "No row" << endl;
     }
@@ -121,13 +130,14 @@ void viewDetailSaleRep(int i) {
         vector<double> totalmonthly;
         vector<int> yearly;
         vector<SaleHistory> sales = getListSaler(saleRep.at(i).stt);
-        
+        //get current year
         int day, month, year;
         time_t t = time(0);
         int yearCrr = (localtime(&t)->tm_year + 1900);
         for (int j = 0; j < sales.size(); j++) {
             bool flag = true;
-            sscanf_s(sales.at(j).date.c_str(), "%2d/%2d/%4d", &day, &month, &year);
+            sscanf_s(sales.at(j).date.c_str(), "%2d/%2d/%4d", &day, &month, &year); // get day, month, year
+            //get total sales in month of current year
             for (int k = 0; k < monthly.size(); k++) {
                 if (month == monthly[k]) {
                     flag = false;
@@ -151,39 +161,24 @@ void viewDetailSaleRep(int i) {
         }
     }
 }
+//add saler into vector salerep
 void addSaleRep(SaleRep a) {
-    /*int index = 0;
-    for (int i = 1; i < 100; i++) {
-        if (saleRep[i].stt == 0) {
-            index = i;
-            break;
-        }
-    }*/
-    /*ostringstream convert;
-    convert << index;
-    a.stt = convert.str();*/
+    
     a.stt = saleRep.size();
-    /*saleRep[index].stt = a.stt;
-    saleRep[index].name = a.name;
-    saleRep[index].address = a.address;
-    saleRep[index].phone = a.phone;
-    saleRep[index].email = a.email;*/
     saleRep.push_back(a);
 }
+//update saler
 void updateSaleRep(int index, SaleRep a) {
+    //check saler exist
     if (saleRep.size() <= index || index == 0) {
         cout << "Row number not exist!!" << endl;
     }
     else {
-        /*saleRep[index].stt = a.stt;
-        saleRep[index].name = a.name;
-        saleRep[index].phone = a.phone;
-        saleRep[index].address = a.address;
-        saleRep[index].email = a.email;*/
         saleRep.at(index) = a;
     }
 }
 
+//get 1 SaleRep
 SaleRep getSaler(int i)
 {
     SaleRep a;
@@ -194,24 +189,29 @@ SaleRep getSaler(int i)
     return a;
 }
 
+//calculate sale bonnus year of saler
 double saleBonus(int yearInput, int i)
 {
    
     double total=0, bonus;
     int day, month, year;
     vector<SaleHistory> sales = getListSaler(saleRep.at(i).stt);
+    //calculate total sales year of saler
     for (int j = 0; j < sales.size(); j++) {
-        sscanf_s(sales.at(j).date.c_str(), "%2d/%2d/%4d", &day, &month, &year);
+        sscanf_s(sales.at(j).date.c_str(), "%2d/%2d/%4d", &day, &month, &year); //get day, month, year
         if (yearInput == year) {
             total += sales.at(j).total;
         }
     }
+    // total <= 100 -> bonus 5% sales
     if (total <= 100) {
         bonus = total * 5 / 100;
     }
+    // total <= 300 -> bonus 10% sales
     else if (total <= 300) {
         bonus = total * 10 / 100;
     }
+    // total > 300 -> bonus 10% sales
     else {
         bonus = total * 20 / 100;
     }

@@ -289,9 +289,6 @@ int main()
                             cout << "No row" << endl;
                         }
 
-                        /*ostringstream convert;
-                        convert << indexSaler;
-                        updateSaler.stt = convert.str();*/
                         
                         cout << "Do you want update more(Y/N): ";
                         cin >> ySaler;
@@ -302,6 +299,7 @@ int main()
                     } while (ySaler != "n" || ySaler != "N");
                 } break; 
                 case 4: {
+                    //calculate sale bonus year
                     do {
                         cout << "Choose saler: "; cin >> indexSaler;
                         SaleRep a = getSaler(indexSaler);
@@ -402,11 +400,8 @@ int main()
                     do {
                         cout << "input row want update: ";
                         cin >> indexPr;
-                        
-
-                        /*ostringstream convert;
-                        convert << indexPr;
-                        updatePr.stt = convert.str();*/
+                        //if have product -> update
+                        // if not cout: no row
                         Product a = getProduct(indexPr);
                         if (a.stt != 0) {
                             cout << "Input information product: " << endl;
@@ -434,6 +429,7 @@ int main()
                     } while (y != "n" || y != "N");
                 } break;
                 case 4: {
+                    //report month in current year
                     do {
                         cout << "Input month to create report: "; cin >> indexPr;
                         reportProduct(indexPr);
@@ -522,7 +518,7 @@ int main()
                         listAllPrd();
                         cout << "Product(number of stt):"; cin >> prod;
                         cout << "Quantity: "; cin >> quantity;
-
+                        //validate date
                         int day, month, year;
                         do {
                             cout << "Date(dd/mm/yyyy): "; cin >> date;
@@ -545,6 +541,9 @@ int main()
                         add.quantity = quantity;
                         add.date = date;
 
+                        //check have product, client, saler
+                        //if total > 0 -> valid
+                        // total = 0 -> invalid
                         Product prd = getProduct(prod);
                         Client cl = getClient(client);
                         SaleRep sr = getSaler(saleRep);
@@ -592,7 +591,7 @@ int main()
                             listAllPrd();
                             cout << "Product(number of stt):"; cin >> prod;
                             cout << "Quantity: "; cin >> quantity;
-
+                            //validate date
                             int day, month, year;
                             do {
                                 cout << "Date(dd/mm/yyyy): "; cin >> date;
@@ -615,6 +614,9 @@ int main()
                             update.quantity = quantity;
                             update.date = date;
 
+                            //check have product, client, saler
+                            //if total > 0 -> valid
+                            // total = 0 -> invalid
                             Product prd = getProduct(prod);
                             Client cl = getClient(client);
                             SaleRep sr = getSaler(saleRep);

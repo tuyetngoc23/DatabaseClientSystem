@@ -23,7 +23,8 @@ void explode(SaleHistory& saleHis, const string& s, const char& c) {
     }
     if (buff != "")
         v.push_back(buff);
-
+    //get line into SaleHistory
+    // stt = 0 if line is header tag
     if (v.size() == 7) {
         if (v[0] == "Stt") {
             saleHis.stt = 0;
@@ -55,9 +56,8 @@ void readFileSales(string fileName)
         while (getline(myfile, line))
         {
             SaleHistory sa;
-            /*cout << line << '\n';*/
-            explode(sa, line, ',');
-            saleHis.push_back(sa);
+            explode(sa, line, ','); // get 1 line
+            saleHis.push_back(sa); // insert SaleHistory into vector saleHis
             i++;
         }
         myfile.close();
@@ -70,9 +70,11 @@ void writeFileSales(string fileName)
 {
     ofstream ptr;
     ptr.open(fileName);
+    //write header tag
     ptr << "Stt" << ',' << "SaleRep" << ',' << "Client" << ',' << "Product" << ',' << "Quantity" << "," 
         << "Date" << "," << "Total" << '\n';
     int i = 1;
+    //write vector saleHis into file
     while (i < saleHis.size()) {
         ptr << saleHis[i].stt << "," << saleHis[i].saleRep << "," << saleHis[i].client << "," << saleHis[i].prod << ","
             << saleHis[i].quantity << "," << saleHis[i].date << "," << saleHis[i].total << '\n';
@@ -81,10 +83,12 @@ void writeFileSales(string fileName)
     }
 }
 
+//list all sale history
 void listAllSales()
 {
     int index = 0;
     for (int i = 1; i < saleHis.size(); i++) {
+        //break if header tag
         if (saleHis[i].stt == 0) {
             break;
         }
@@ -95,8 +99,10 @@ void listAllSales()
     }
 }
 
+//view detail each sale history
 void viewDetailSales(int i)
 {
+    //check sale history exist
     if (saleHis.size() <= i || i == 0) {
         cout << "No row" << endl;
     }
@@ -107,43 +113,24 @@ void viewDetailSales(int i)
     }
 }
 
+//add sales into vector saleHis
 void addSales(SaleHistory a)
 {
-    /*int index = 0;
-    for (int i = 1; i < 100; i++) {
-        if (saleHis[i].stt == 0) {
-            index = i;
-            break;
-        }
-    }*/
-    a.stt = saleHis.size();/*
-    saleHis[index].stt = a.stt;
-    saleHis[index].saleRep = a.saleRep;
-    saleHis[index].client = a.client;
-    saleHis[index].prod = a.prod;
-    saleHis[index].quantity = a.quantity;
-    saleHis[index].date = a.date;
-    saleHis[index].total = a.total;*/
+    a.stt = saleHis.size();
     saleHis.push_back(a);
 }
 
 void updateSales(int index, SaleHistory a)
 {
+    //check history exist before update
     if (saleHis.size() <= index || index == 0) {
         cout << "Row number not exist!!" << endl;
     }
-    else {
-        /*saleHis[index].stt = a.stt;
-        saleHis[index].saleRep = a.saleRep;
-        saleHis[index].client = a.client;
-        saleHis[index].prod = a.prod;
-        saleHis[index].quantity = a.quantity;
-        saleHis[index].date = a.date;
-        saleHis[index].total = a.total;*/
+    else {        
         saleHis[index] = a;
     }
 }
-
+//get 1 sale history
 SaleHistory getSaleHistory(int i)
 {
     SaleHistory a;
@@ -154,6 +141,7 @@ SaleHistory getSaleHistory(int i)
     return a;
 }
 
+//get list client
 vector<SaleHistory> getListClient(int indexClient)
 {
     vector<SaleHistory> sales;
@@ -166,6 +154,7 @@ vector<SaleHistory> getListClient(int indexClient)
     return sales;
 }
 
+//get list saler 
 vector<SaleHistory> getListSaler(int indexSaler)
 {
     vector<SaleHistory> sales;
@@ -178,6 +167,7 @@ vector<SaleHistory> getListSaler(int indexSaler)
     return sales;
 }
 
+//get list product is bought
 vector<SaleHistory> getListProduct(int indexProduct)
 {
     vector<SaleHistory> sales;

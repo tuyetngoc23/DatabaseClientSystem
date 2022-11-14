@@ -3,18 +3,19 @@
 #include <vector>
 using namespace std;
 
+//base class(parent)
 class Info {
 	public:
 		int stt=0;
 		string name, address, phone, email;
 };
-
+//child
 class Client : public Info {
 	// The structure to store city information;
 	
 };
 
-
+//child
 class SaleRep : public Info{
 
 };

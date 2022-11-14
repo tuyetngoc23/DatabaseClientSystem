@@ -26,7 +26,7 @@ void explode(Product& product, const string& s, const char& c) {
     }
     if (buff != "")
         v.push_back(buff);
-
+    //stt = 0 in line 1
     if (v.size() == 4) {
         if (v[0] == "Stt" && v[2] == "Quantity" && v[3] == "Active") {
             product.stt = 0;
@@ -54,10 +54,9 @@ void readFileProduct(string fileName)
         while (getline(myfile, line))
         {
 
-            /*cout << line << '\n';*/
             Product prd;
-            explode(prd, line, ',');
-            product.push_back(prd);
+            explode(prd, line, ','); //get 1 product
+            product.push_back(prd); // insert product into vector
             i++;
         }
         myfile.close();
@@ -71,7 +70,9 @@ void writeFileProduct(string fileName)
     ofstream ptr;
     ptr.open(fileName);
     int i = 1;
+    //add header into file
     ptr << "Stt" << "," << "Name" << "," << "Price" << "," << "Active" << '\n';
+    //add vector product into file
     while (i < product.size()) {
         ptr << product[i].stt << "," << product[i].name << "," << product[i].price << "," << product[i].active << '\n';
         cout << "File saved" << endl;
@@ -79,14 +80,17 @@ void writeFileProduct(string fileName)
     }
 }
 
+//list all product
 void listAllPrd()
 {
     double total;
     for (int i = 1; i < product.size(); i++) {
+        //break line 1(tag)
         if (product[i].stt == 0) {
             break;
         }
         else {
+            //calculate total sales of each product
             vector<SaleHistory> sales = getListProduct(product.at(i).stt);
             total = 0;
             if (sales.size() > 0) {
@@ -102,6 +106,7 @@ void listAllPrd()
     }
 }
 
+//view detail product
 void viewDetailProduct(int i)
 {
     if (i >= product.size() || i == 0) {
@@ -114,40 +119,26 @@ void viewDetailProduct(int i)
 }
 
 
+//add product into vector
 void addProduct(Product a)
-{
-    /*int index = 0;
-    for (int i = 1; i < 100; i++) {
-        if (product[i].stt == 0) {
-            index = i;
-            break;
-        }
-    }*/
-    /*ostringstream convert;
-    convert << index;
-    a.stt = convert.str();*/
-    a.stt = product.size();/*
-    product[index].stt = a.stt;
-    product[index].name = a.name;
-    product[index].price = a.price;
-    product[index].active = a.active;*/
+{    
+    a.stt = product.size();
     product.push_back(a);
 }
 
+//update product
 void updateProduct(int index, Product a)
 {
+    //check product exist
     if (index >= product.size() || index == 0) {
         cout << "Row number not exist!!" << endl;
     }
     else {
-        /*product[index].stt = a.stt;
-        product[index].name = a.name;
-        product[index].price = a.price;
-        product[index].active = a.active;*/
         product[index] = a;
     }
 }
 
+//get 1 product 
 Product getProduct(int i) {
 
     Product a;
@@ -159,21 +150,25 @@ Product getProduct(int i) {
     return a;
 }
 
+//create report month in current year
 void reportProduct(int monthInput)
 {
     double total;
     int amount, day, month, year;
+    //get current of computer system
     time_t t = time(0);
     int yearCrr = (localtime(&t)->tm_year + 1900);
     readFileProduct("product.csv");
+    //create table report
     cout << setw(5) << "No." << setw(20) << "Name" << setw(10) << "Price" << setw(10) << "Quantity" << setw(10) << "Total" << endl;
+    //calculate total sales of product in month of current year
     for (int i = 1; i < product.size(); i++) {
         vector<SaleHistory> sales = getListProduct(product.at(i).stt);
         total = 0;
         amount = 0;
         if (sales.size() > 0) {
             for (int k = 0; k < sales.size(); k++) {
-                sscanf_s(sales.at(k).date.c_str(), "%2d/%2d/%4d", &day, &month, &year);
+                sscanf_s(sales.at(k).date.c_str(), "%2d/%2d/%4d", &day, &month, &year); //get each day,month,year
                 if (monthInput == month && year == yearCrr) {
                     if (sales.at(k).total > 0) {
                         total = total + sales.at(k).total;

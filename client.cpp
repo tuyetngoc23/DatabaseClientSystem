@@ -10,6 +10,7 @@
 
 //Client client[100];
 vector<Client> client;
+//getline in file
 void explode(Client& client, const string& s, const char& c) {
     string buff{ "" };
     vector<string> v;
@@ -24,7 +25,7 @@ void explode(Client& client, const string& s, const char& c) {
     }
     if (buff != "")
         v.push_back(buff);
-
+    //getline file, lint have string -> save stt=0
     if (v.size() == 5) {
         if (v[0] == "Stt") {
             client.stt= 0;
@@ -38,6 +39,7 @@ void explode(Client& client, const string& s, const char& c) {
         client.email = v[4];
     }
 }
+
 void readFile(string fileName) {
     string line;
     int i = 0;
@@ -47,10 +49,9 @@ void readFile(string fileName) {
     {
         while (getline(myfile, line))
         {
-            Client cl;
-            /*cout << line << '\n';*/
-            explode(cl, line, ',');
-            client.push_back(cl);
+            Client cl;            
+            explode(cl, line, ','); //getline 1 Client
+            client.push_back(cl); //inser into vector Client
             i++;
         }
         myfile.close();
@@ -61,7 +62,9 @@ void readFile(string fileName) {
 void writeFile(string fileName) {
     ofstream ptr;
     ptr.open(fileName);
+    //add header tag into file
     ptr << "Stt" << ',' << "Name"  << ',' << "Address" << ',' << "Phone" << ',' << "Email" << '\n';
+    //add vector Client into file
     int i = 1;
     while (i < client.size()) {
         ptr << client.at(i).stt << "," << client.at(i).name << "," << client.at(i).address << "," << client.at(i).phone << ","
@@ -72,6 +75,7 @@ void writeFile(string fileName) {
     ptr.close();
 }
 
+//list all object
 void listAll() {
     int index = 0;
     string short_address; 
@@ -81,6 +85,7 @@ void listAll() {
             break;
         }
         else {
+            //calculate total sales of each client
             vector<SaleHistory> sales = getListClient(client.at(i).stt);
             total = 0;
             if (sales.size() > 0) {                
@@ -89,7 +94,9 @@ void listAll() {
                         total = total + sales.at(k).total;
                     }
                 }
-            }            
+            }
+            //get short address after '-'
+            //shor address is string after '-'
             for (int j = client[i].address.length() - 1; j >= 0; j--) {
                 if (client[i].address[j] == '-') {
                     index = j;
@@ -112,6 +119,7 @@ void listAll() {
     }
 }
 
+//view detail each Client
 void viewDetailClient(int i) {
     if (i >= client.size() || i == 0) {
         cout << "No row" << endl;
@@ -122,42 +130,25 @@ void viewDetailClient(int i) {
     }
 
 }
+//add client into vector Client
 void addClient(Client a) {
-    /*int index = 0;*/
-    /*for (int i = 1; i < client.size(); i++) {
-        if (client[i].stt == 0) {
-            index = i;
-            break;
-        }
-    }*/
-   /* ostringstream convert;
-    convert << index;
-    a.stt = convert.str();*/
+    
     a.stt = client.size();
-    /*client[client.size()].stt = index;
-    client[client.size()].name = a.name;
-    client[client.size()].address = a.address;
-    client[client.size()].phone = a.phone;
-    client[client.size()].email = a.email;*/
     client.push_back(a);
 
 }
+//update client into vector Client
 void updateClient(int index, Client a) {
     if (index >= client.size() || index == 0) {
         cout << "Row number not exist!!" << endl;
     }
     else {
-        /*client.at(index).stt = a.stt;
-        client.at(index).name = a.name;
-        client.at(index).address = a.address;
-        client.at(index).email = a.email;
-        client.at(index).phone = a.phone;*/
         client.at(index) = a;
-        /*client.push_back(a);*/
     }
 
 }
 
+//get client with id
 Client getClient(int i)
 {
     Client a;
